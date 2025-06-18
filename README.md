@@ -117,3 +117,59 @@ python src/models/hypothesis_testing.py
 # Train models
 python src/models/train_models.py
 ```
+
+## Data Version Control (DVC)
+
+This project uses [DVC](https://dvc.org/) to manage large data files and ensure reproducibility and auditability of all analyses and models. DVC allows us to:
+
+- Version control large datasets without bloating the Git repository
+- Reproduce any analysis or model result at any time
+- Share data efficiently with collaborators
+
+### How DVC Works in This Project
+
+- The actual data files (e.g., `insurance_data.txt`) are **not** tracked by Git, but by DVC.
+- Only small `.dvc` files (e.g., `insurance_data.txt.dvc`) and DVC config files are tracked by Git.
+- The data itself is stored in a local DVC remote (`data/dvc_storage/`).
+- When you clone the repo, you get the code and `.dvc` files. To get the data, you run `dvc pull`.
+
+### How to Get the Data
+
+1. **Clone the repository:**
+   ```bash
+   git clone <repo-url>
+   cd <repo-directory>
+   ```
+2. **Install DVC:**
+   ```bash
+   pip install dvc
+   ```
+3. **Pull the data:**
+   ```bash
+   dvc pull
+   ```
+   This will download the required data files into the correct locations from the DVC remote storage.
+
+### How to Add or Update Data (for contributors)
+
+1. Place new or updated data files in the appropriate `data/` subdirectory.
+2. Track the file with DVC:
+   ```bash
+   dvc add data/raw/your_new_data.csv
+   ```
+3. Commit the `.dvc` file and DVC config changes to Git:
+   ```bash
+   git add data/raw/your_new_data.csv.dvc data/raw/.gitignore .dvc/config
+   git commit -m "Track new data file with DVC"
+   ```
+4. Push the data to the DVC remote:
+   ```bash
+   dvc push
+   ```
+
+### Troubleshooting
+
+- If you see an error about a file being git-ignored, make sure your `.gitignore` allows `.dvc` files but not the actual data files.
+- If `dvc pull` fails, check your DVC remote configuration and storage permissions.
+
+**Note:** The actual data files are not tracked by Git, only by DVC. The `.dvc` files are tracked by Git and ensure data versioning and reproducibility.
