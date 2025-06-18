@@ -192,4 +192,11 @@ cython_debug/
 #  refer to https://docs.cursor.com/context/ignore-files
 .cursorignore
 .cursorindexingignore
-data/
+
+# Data files
+data/*
+!data/*.dvc
+!data/raw/
+!data/processed/
+!data/external/
+!data/dvc_storage/
