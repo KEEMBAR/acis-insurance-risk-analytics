@@ -1,0 +1,96 @@
+name: Insurance Analytics CI/CD
+
+on:
+  push:
+    branches: [main, task-1]
+  pull_request:
+    branches: [main, task-1]
+
+jobs:
+  code-quality:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+
+      - name: Set up Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: "3.8"
+
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install -r requirements.txt
+          pip install black flake8 pytest
+
+      - name: Check code formatting with Black
+        run: |
+          black . --check
+
+      - name: Lint with flake8
+        run: |
+          flake8 . --count --select=E9,F63,F7,F82 --show-source --statistics
+          flake8 . --count --exit-zero --max-complexity=10 --max-line-length=127 --statistics
+
+  test:
+    needs: code-quality
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+
+      - name: Set up Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: "3.8"
+
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install -r requirements.txt
+
+      - name: Run tests
+        run: |
+          pytest tests/
+
+  notebook-test:
+    needs: test
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+
+      - name: Set up Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: "3.8"
+
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install -r requirements.txt
+          pip install nbformat nbconvert
+
+      - name: Check notebook execution
+        run: |
+          jupyter nbconvert --to notebook --execute notebooks/eda/eda_task1.ipynb --output executed_notebook.ipynb
+
+  documentation:
+    needs: notebook-test
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+
+      - name: Set up Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: "3.8"
+
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install -r requirements.txt
+          pip install sphinx sphinx-rtd-theme
+
+      - name: Build documentation
+        run: |
+          cd docs
+          sphinx-build -b html . _build/html
