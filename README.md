@@ -53,12 +53,51 @@ acis-insurance-risk-analytics/
 - [ ] Margin differences between zip codes
 - [ ] Risk differences between genders
 
-### Task 4: Statistical Modeling
+### Task 4: Predictive Modeling & Model Interpretation
 
-- [ ] Linear regression for zip code claim prediction
-- [ ] Machine learning models for premium optimization
-- [ ] Feature importance analysis with SHAP
-- [ ] Model evaluation and comparison
+### Overview
+
+In Task 4, we built and evaluated several regression models (Linear Regression, Random Forest, XGBoost) to predict claim severity for car insurance policies. We also used SHAP to interpret model predictions and identify the most influential features.
+
+### Steps Performed
+
+- Data cleaning and feature engineering
+- Train-test split
+- Model training and evaluation (Linear Regression, Random Forest, XGBoost)
+- Model comparison using RMSE and R²
+- Model interpretation using SHAP
+- Business recommendations based on model results and feature importance
+
+### Key Findings
+
+- All models performed poorly (low or negative R²), indicating claim severity is difficult to predict with the current data.
+- SHAP analysis showed CalculatedPremiumPerTerm and SumInsured as the most influential features, but overall predictive power was low.
+
+### Recommendations
+
+- Consider collecting more granular or additional data.
+- Explore alternative modeling targets, such as claim frequency (classification).
+- Use domain knowledge to engineer new features that may improve model performance.
+
+## Modular Code Organization (`src/`)
+
+Reusable code for feature engineering, model training, and evaluation is organized in the `src/` directory:
+
+- `src/features/feature_engineering.py`: Feature creation functions
+- `src/features/feature_selection.py`: Feature selection utilities
+- `src/models/train.py`: Model training functions
+- `src/models/evaluate.py`: Model evaluation metrics
+- `src/models/predict.py`: Model prediction functions
+
+**How to use in your notebook:**
+
+```python
+from src.features.feature_engineering import add_vehicle_age
+from src/models.train import train_linear_regression
+from src/models/evaluate import evaluate_regression
+```
+
+This structure keeps the project modular, maintainable, and ready for future development.
 
 ## Key Metrics
 
